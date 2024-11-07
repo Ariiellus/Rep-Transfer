@@ -1,27 +1,39 @@
 import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
-import { fetchPoaps } from 'src/utils/poapTest';
+import { fetchTalentCredentials, fetchTalentScore } from 'src/utils/TalentPassport';
 
 export default function WalletMigration() {
     const { address, isConnected } = useAccount();
-    const [poaps, setPoaps] = useState(null);
+    const [talentScore, setTalentScore] = useState(null);
+    const [gitcoinScore, setGitcoinScore] = useState(null);
+    const [worldcoinVerified, setWorldcoinVerified] = useState(null);
 
     useEffect(() => {
-        const loadPoaps = async () => {
-            if (!isConnected || !address) return;
-            
-            console.log("Calling fetchPoaps with address:", address); // Debug log
+        const loadTalentData = async () => {
+            if (!address) return;
+
+            console.log("Fetching Talent Data for address:", address);
 
             try {
-                const poapData = await fetchPoaps(address);
-                console.log("Fetched POAPs data:", poapData); // Debug log
-                setPoaps(poapData);
+                // Fetch talent score
+                const { score } = await fetchTalentScore(address);
+                setTalentScore(score);
+
+                // Fetch credentials
+                const { gitcoinScore, worldcoinVerified } = await fetchTalentCredentials(address);
+
+                // Set Gitcoin and Worldcoin values based on the retrieved credentials
+                setGitcoinScore(gitcoinScore);
+                setWorldcoinVerified(worldcoinVerified);
+
             } catch (error) {
-                console.error("Failed to fetch POAPs:", error);
+                console.error("Failed to fetch Talent Data:", error);
             }
         };
 
-        loadPoaps();
+        if (isConnected && address) {
+            loadTalentData();
+        }
     }, [address, isConnected]);
 
     return (
@@ -30,20 +42,10 @@ export default function WalletMigration() {
             <br /><br />
             <h2><b>List of Badges</b></h2>
             <ul>
-                <li>Talent Score:</li>
-                <li>Gitcoin Passport:</li>
-                <li>World ID:</li>
-                <li>Wallet Age:</li>
-                <li>POAPs:</li>
-                {poaps ? (
-                    <ul>
-                        {poaps.map((poap, index) => (
-                            <li key={index}>{poap}</li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>Loading POAPs...</p>
-                )}
+                <li>Talent Score: {talentScore !== null ? talentScore : "Loading..."}</li>
+                <li>Gitcoin Passport: {gitcoinScore !== null ? gitcoinScore : "Loading..."}</li>
+                <li>World ID: {worldcoinVerified !== null ? worldcoinVerified : "Loading..."}</li>
+                <li>Wallet Age: 286 days</li>
             </ul>
             <br /><br />
             <h3><b>Destination Address:</b></h3>

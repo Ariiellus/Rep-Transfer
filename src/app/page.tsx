@@ -10,7 +10,6 @@ import LoginButton from '../components/LoginButton';
 import SignupButton from '../components/SignupButton';
 import { ConnectWallet } from '@coinbase/onchainkit/wallet';
 import WalletMigration from 'src/components/WalletMigration';
-import { fetchPoaps } from 'src/utils/poapTest';
 
 export default function Page() {
   const { address, isConnected } = useAccount();
@@ -25,7 +24,7 @@ export default function Page() {
             target="_blank"
             rel="noreferrer"
           >
-            <OnchainkitSvg />
+            <img src="/repTranLogo.png" alt="Reputation Transfer Logo" className="w-72 h-24" />
           </a>
           <div className="flex items-center gap-3">
             <SignupButton />
@@ -44,9 +43,7 @@ export default function Page() {
         ) : (
           <WalletMigration />
         )}
-      </section>
-
-      <section>
+        <div>
         {address ? (
           <TransactionWrapper address={address} />
         ) : (
@@ -55,8 +52,8 @@ export default function Page() {
             text="Export Reputation"
           />
         )}
+        </div>
       </section>
-
       <Footer />
     </div>
   );

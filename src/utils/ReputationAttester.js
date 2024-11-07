@@ -8,11 +8,11 @@ const eas = new EAS(easContractAddress);
 export async function createAttestation(signer, recipientAddress) {
     await eas.connect(signer);
 
-    const schemaEncoder = new SchemaEncoder("uint8 TalentScore,uint8 GitcoinPassport,bool WorldID,string Date,string Hash");
+    const schemaEncoder = new SchemaEncoder("uint8 TalentScore,uint8 gitcoinCredential,bool worldcoinCredential,string Date,string Hash");
     const encodedData = schemaEncoder.encodeData([
         { name: "TalentScore", value: "0", type: "uint8" },
-        { name: "GitcoinPassport", value: "0", type: "uint8" },
-        { name: "WorldID", value: false, type: "bool" },
+        { name: "gitcoinCredential", value: "0", type: "uint8" },
+        { name: "worldcoinCredential", value: false, type: "bool" },
         { name: "Date", value: "", type: "string" },
         { name: "Hash", value: "", type: "string" },
     ]);
