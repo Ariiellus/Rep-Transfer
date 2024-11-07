@@ -83,3 +83,23 @@ a {
 .templateSection > div {
   max-width: 100%;;
 }
+
+/* adjust text in frontend */
+
+.text-container {
+  word-break: break-word;        
+  overflow-wrap: break-word;      
+  max-width: 100%;                
+}
+
+.text-container p, 
+.text-container h2, 
+.text-container h3, 
+.text-container ul li {
+  font-size: 0.875rem;           
+  line-height: 1.5;           
+}
+
+input[type="text"] {
+  width: 100%;        
+}

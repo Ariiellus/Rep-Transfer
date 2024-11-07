@@ -10,6 +10,7 @@ import LoginButton from '../components/LoginButton';
 import SignupButton from '../components/SignupButton';
 import { ConnectWallet } from '@coinbase/onchainkit/wallet';
 import WalletMigration from 'src/components/WalletMigration';
+import { fetchPoaps } from 'src/utils/poapTest';
 
 export default function Page() {
   const { address, isConnected } = useAccount();
