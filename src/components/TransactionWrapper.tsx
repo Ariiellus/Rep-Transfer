@@ -1,38 +1,65 @@
 'use client';
-import { useAccount, useSigner } from 'wagmi';
-import { createAttestation } from 'src/utils/ReputationAttester';
-import { TransactionStatus, TransactionStatusAction, TransactionStatusLabel } from '@coinbase/onchainkit/transaction';
+import {
+  Transaction,
+  TransactionButton,
+  TransactionStatus,
+  TransactionStatusAction,
+  TransactionStatusLabel,
+} from '@coinbase/onchainkit/transaction';
+import type {
+  TransactionError,
+  TransactionResponse,
+} from '@coinbase/onchainkit/transaction';
+import type { Address } from 'viem';
+import { BASE_SEPOLIA_CHAIN_ID, mintABI, mintContractAddress } from '../constants';
+import { createAttestation } from '../utils/ReputationAttester';
 
-export default function TransactionWrapper({ address }: { address: string }) {
-  const { isConnected } = useAccount();
-  const { data: signer } = useSigner();
+type TransactionWrapperProps = {
+  address: Address;
+  recipient: string;
+};
 
-  const handleTransact = async () => {
-    if (!isConnected || !signer) {
-      console.error("No wallet connected or signer not available");
-      return;
-    }
+export default function TransactionWrapper({ address, recipient }: TransactionWrapperProps) {
+  const handleError = (err: TransactionError) => {
+    console.error('Transaction error:', err);
+  };
+
+  const handleSuccess = async (response: TransactionResponse) => {
+    console.log('Transaction successful', response);
 
     try {
-      const attestationUID = await createAttestation(signer, address);
+      const attestationUID = await createAttestation(address, recipient);
       console.log("Attestation created with UID:", attestationUID);
     } catch (error) {
       console.error("Error creating attestation:", error);
     }
   };
 
+  // Define the `contracts` array with the necessary transaction details
+  const contracts = [
+    {
+      address: mintContractAddress,
+      abi: mintABI,
+      functionName: 'mint',
+      args: [address],
+    },
+  ];
+
   return (
     <div className="flex w-[450px]">
-      <TransactionStatus>
-        <TransactionStatusLabel />
-        <TransactionStatusAction />
-      </TransactionStatus>
-      <button
-        onClick={handleTransact}
-        className="mt-0 mr-auto ml-auto w-[450px] max-w-full bg-[#6366F1] text-white py-2 rounded"
+      <Transaction
+        className="w-[450px]"
+        chainId={BASE_SEPOLIA_CHAIN_ID}
+        contracts={contracts} // Pass `contracts` to the `Transaction` component
+        onError={handleError}
+        onSuccess={handleSuccess}
       >
-        Transact
-      </button>
+        <TransactionButton className="mt-0 mr-auto ml-auto w-[450px] max-w-full text-[white]" />
+        <TransactionStatus>
+          <TransactionStatusLabel />
+          <TransactionStatusAction />
+        </TransactionStatus>
+      </Transaction>
     </div>
   );
 }

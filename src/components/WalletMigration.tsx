@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { fetchTalentCredentials, fetchTalentScore } from 'src/utils/TalentPassport';
+import { RecipientProvider } from 'src/utils/RecipientContext';
+
 
 export default function WalletMigration() {
     const { address, isConnected } = useAccount();
